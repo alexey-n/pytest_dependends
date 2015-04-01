@@ -20,7 +20,7 @@ def pytest_configure(config):
         config.addinivalue_line("markers", "dependends_on(name): ...")
 
 
-def pytest_runtest_makereport(report):
+def pytest_report_teststatus(report):
     if pytest.enable_dependends:
         test_method = report.location[2]
         update_test_classes(test_method, pytest.test_classes)
