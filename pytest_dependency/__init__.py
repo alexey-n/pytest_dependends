@@ -3,11 +3,13 @@ __author__ = 'alexey-n'
 import pytest
 import re
 
+
 def pytest_addoption(parser):
     group = parser.getgroup("general")
     group.addoption('--no_dependends',
-           action="store_true", dest="no_dependends", default=False,
-           help="Disable skip test if dependends not resolved")
+                    action="store_true", dest="no_dependends", default=False,
+                    help="Disable skip test if dependends not resolved")
+
 
 def pytest_configure(config):
     enable_dependends = not(config.option.no_dependends)
@@ -15,15 +17,15 @@ def pytest_configure(config):
     setattr(pytest, "test_results", {})
     setattr(pytest, "test_classes", {})
     if enable_dependends:
-        config.addinivalue_line("markers",
-            "dependends_on(name): ...")
+        config.addinivalue_line("markers", "dependends_on(name): ...")
 
 
-def pytest_report_teststatus(report):
+def pytest_runtest_makereport(report):
     if pytest.enable_dependends:
         test_method = report.location[2]
         update_test_classes(test_method, pytest.test_classes)
         update_test_results(test_method, report.passed, pytest.test_results)
+
 
 def update_test_classes(test_method, test_classes):
     if "." in test_method:
@@ -34,18 +36,21 @@ def update_test_classes(test_method, test_classes):
             else:
                 test_classes[class_name] = [method_name]
 
+
 def update_test_results(test_method, is_passed, test_results):
     if test_method in pytest.test_results:
         test_results[test_method] &= is_passed
     else:
         test_results[test_method] = is_passed
 
+
 def pytest_runtest_setup(item):
     if pytest.enable_dependends:
         condition = get_item_condition(item, pytest.test_results, pytest.test_classes)
-        if condition != None:
+        if condition is not None:
             if not(eval_condition(condition, pytest.test_results, pytest.test_classes)):
                 pytest.skip("Test was skipped")
+
 
 def get_item_condition(item, test_results, test_classes):
     markers = item.keywords.__dict__['_markers']
@@ -61,6 +66,7 @@ def get_item_condition(item, test_results, test_classes):
                 if not(dependend in test_results):
                     raise Exception("Have not resolved dependends: " + dependend)
         return condition
+
 
 def eval_condition(condition, test_results, test_classes):
     dependends = get_dependends_list(condition)
@@ -78,9 +84,9 @@ def eval_condition(condition, test_results, test_classes):
     except:
         raise Exception("Eval condition error('" + condition + "')")
 
+
 def get_dependends_list(dependends):
     dependends = dependends.replace("(", " ").replace(")", " ").replace(" or ", " ").replace(" and ", " ")
     dependends = re.sub("\\s\\s+", " ", dependends)
     dependends = re.sub("(^\\s*)|(\\s*$)", "", dependends)
     return dependends.split(" ")
-

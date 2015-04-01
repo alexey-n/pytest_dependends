@@ -10,7 +10,7 @@ setup(
     author_email=__author__ + '.test@yandex.ru',
     url='https://github.com/alexey-n/pytest_dependends',
     packages=['pytest_dependency'],
-    entry_points = {
+    entry_points={
         'pytest11': [
             'pytest_dependency = pytest_dependency',
         ]
