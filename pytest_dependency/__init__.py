@@ -1,7 +1,6 @@
 __author__ = 'alexey-n'
 
 import pytest
-import re
 
 
 def pytest_addoption(parser):
@@ -90,9 +89,7 @@ def eval_condition(condition, test_results, test_classes):
 
 def get_dependends_list(dependends):
     dependends = dependends.replace("(", " ").replace(")", " ").replace(" or ", " ").replace(" and ", " ")
-    dependends = re.sub("\\s\\s+", " ", dependends)
-    dependends = re.sub("(^\\s*)|(\\s*$)", "", dependends)
-    return dependends.split(" ")
+    return dependends.split()
 
 
 class EvalError(Exception):
