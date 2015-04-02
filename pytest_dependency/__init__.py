@@ -20,11 +20,14 @@ def pytest_configure(config):
         config.addinivalue_line("markers", "dependends_on(name): ...")
 
 
-def pytest_report_teststatus(report):
+def pytest_runtest_makereport(item, call):
     if pytest.enable_dependends:
-        test_method = report.location[2]
+        test_method = item.location[2]
+        passed = False
+        if call.excinfo is None:
+            passed = True
         update_test_classes(test_method, pytest.test_classes)
-        update_test_results(test_method, report.passed, pytest.test_results)
+        update_test_results(test_method, passed, pytest.test_results)
 
 
 def update_test_classes(test_method, test_classes):
@@ -60,10 +63,10 @@ def get_item_condition(item, test_results, test_classes):
         for dependend in dependends:
             if ".*" in dependend:
                 class_name = dependend.replace(".*", "")
-                if not(class_name in test_classes):
+                if class_name not in test_classes:
                     raise SyntaxError("Have not resolved class dependends: " + class_name)
             else:
-                if not(dependend in test_results):
+                if dependend not in test_results:
                     raise SyntaxError("Have not resolved dependends: " + dependend)
         return condition
 
