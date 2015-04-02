@@ -33,6 +33,6 @@ def test_valid_condition_with_class():
 
 
 def test_invalid_condition():
-    with pytest.raises(pytest_dependency.EvalError) as exception:
+    with pytest.raises(SyntaxError) as exception:
         pytest_dependency.eval_condition("test1 + \"a\"", {"test1": True}, {})
     assert_that(str(exception.value), equal_to("Eval condition error('True + \"a\"')"))

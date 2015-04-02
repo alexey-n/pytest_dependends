@@ -20,7 +20,7 @@ def test_valid_item(testdir):
 def test_invalid_item(testdir):
     test_results = {"test1": True, "test2": True, "test3": True}
     items = testdir.getitems(valid_items)
-    with pytest.raises(pytest_dependency.SyntaxError) as exception:
+    with pytest.raises(SyntaxError) as exception:
         pytest_dependency.get_item_condition(items[0], test_results, {})
     assert_that(str(exception.value), equal_to("Have not resolved dependends: test4"))
 
@@ -28,6 +28,6 @@ def test_invalid_item(testdir):
 def test_invalid_class(testdir):
     test_results = {"test1": True, "test2": True, "test3": True, "test4": True, "TestClass.test_c": True}
     items = testdir.getitems(valid_items)
-    with pytest.raises(pytest_dependency.SyntaxError) as exception:
+    with pytest.raises(SyntaxError) as exception:
         pytest_dependency.get_item_condition(items[4], test_results, {})
     assert_that(str(exception.value), equal_to("Have not resolved class dependends: TestClass"))

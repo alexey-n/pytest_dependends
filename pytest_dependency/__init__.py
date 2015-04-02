@@ -1,6 +1,7 @@
 __author__ = 'alexey-n'
 
 import pytest
+from exceptions import SyntaxError
 
 
 def pytest_addoption(parser):
@@ -84,17 +85,9 @@ def eval_condition(condition, test_results, test_classes):
                 condition = condition.replace(dependend, str(test_results[dependend]))
         return eval(condition)
     except:
-        raise EvalError("Eval condition error('%s')" % condition)
+        raise SyntaxError("Eval condition error('%s')" % condition)
 
 
 def get_dependends_list(dependends):
     dependends = dependends.replace("(", " ").replace(")", " ").replace(" or ", " ").replace(" and ", " ")
     return dependends.split()
-
-
-class EvalError(Exception):
-    pass
-
-
-class SyntaxError(Exception):
-    pass
