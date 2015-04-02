@@ -64,10 +64,10 @@ def get_item_condition(item, test_results, test_classes):
             if ".*" in dependend:
                 class_name = dependend.replace(".*", "")
                 if class_name not in test_classes:
-                    raise SyntaxError("Have not resolved class dependends: " + class_name)
+                    raise SyntaxError("Have not resolved class dependends: %s".format(class_name))
             else:
                 if dependend not in test_results:
-                    raise SyntaxError("Have not resolved dependends: " + dependend)
+                    raise SyntaxError("Have not resolved dependends: %s".format(dependend))
         return condition
 
 
@@ -85,7 +85,7 @@ def eval_condition(condition, test_results, test_classes):
                 condition = condition.replace(dependend, str(test_results[dependend]))
         return eval(condition)
     except:
-        raise EvalError("Eval condition error('" + condition + "')")
+        raise EvalError("Eval condition error('%s')".format(condition))
 
 
 def get_dependends_list(dependends):
