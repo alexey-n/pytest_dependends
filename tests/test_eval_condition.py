@@ -28,7 +28,7 @@ def test_valid_condition_with_class():
 
 
 def test_invalid_condition():
-    with pytest.raises(Exception) as exception:
+    with pytest.raises(pytest_dependency.EvalError) as exception:
         pytest_dependency.eval_condition("test1 + \"a\"", {"test1": True}, {})
     print exception.value
     assert "Eval condition error('True + \"a\"')" == str(exception.value)
